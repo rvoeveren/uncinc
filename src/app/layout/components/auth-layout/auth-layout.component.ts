@@ -12,4 +12,10 @@ export class AuthLayoutComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  /**
+   * TODO: Make neat with route/guard?
+   */
+  public logout() {
+    console.error('logging you out!');
+  }
 }

@@ -1,15 +1,21 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { HomeComponent } from '../home/components/home/home.component';
+import { AuthLayoutComponent } from '../layout/components/auth-layout/auth-layout.component';
 
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 
 export const DASHBOARD_ROUTES: Routes = [
   {
     path: '',
-    component: DashboardComponent,
-  }
+    component: AuthLayoutComponent,
+    children: [
+      {
+        path: '',
+        component: DashboardComponent,
+      }
+    ],
+  },
 ];
 
 @NgModule({

@@ -27,7 +27,6 @@ export class IsAuthenticatedGuard implements CanActivate {
    */
   public canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> {
     // TODO: Check the Store for the actual Auth status, now we're assuming you're not authenticated yet.
-    console.warn('Checking authentication. Not implemented yet so just returning you to the homepage.')
-    return of(this.router.createUrlTree(['home']));
+    return of(this.router.parseUrl('/auth/login'));
   }
 }

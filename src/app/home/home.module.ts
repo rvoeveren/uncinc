@@ -1,15 +1,22 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
+import { PublicLayoutComponent } from '../layout/components/public-layout/public-layout.component';
 
 import { HomeComponent } from './components/home/home.component';
 
 export const HOME_ROUTES: Routes = [
   {
     path: '',
-    component: HomeComponent,
-    canActivate: [],
-  }
+    component: PublicLayoutComponent,
+    children: [
+      {
+        path: '',
+        component: HomeComponent,
+        canActivate: [],
+      }
+    ],
+  },
 ];
 
 @NgModule({
