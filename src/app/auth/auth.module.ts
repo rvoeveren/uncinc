@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from '../dashboard/components/dashboard/dashboard.component';
 import { DASHBOARD_ROUTES } from '../dashboard/dashboard.module';
@@ -28,7 +29,9 @@ export const AUTH_ROUTES: Routes = [
   ],
   imports: [
     RouterModule.forChild(AUTH_ROUTES),
-    CommonModule
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
   ]
 })
 export class AuthModule { }
