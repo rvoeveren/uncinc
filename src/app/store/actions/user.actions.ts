@@ -4,8 +4,12 @@ import { User } from '../../auth/models/user.model';
 
 export enum UserActionTypes {
   Login = '[User] LOGIN',
-  LoginSuccess = '[User] LOGIN_SUCCEEDED',
-  LoginFail = '[User] LOGIN_FAILED',
+  LoginSuccess = '[User] LOGIN SUCCEEDED',
+  LoginFail = '[User] LOGIN FAILED',
+  Logout = '[User] LOGOUT',
+  AutoLogin = '[User] AUTO LOGIN',
+  AutoLoginSuccess = '[User] AUTO LOGIN SUCCEEDED',
+  AutoLoginFail = '[User] AUTO LOGIN FAILED',
 }
 
 export const UserLogin = createAction(
@@ -20,6 +24,24 @@ export const UserLoginSuccess = createAction(
 
 export const UserLoginFail = createAction(
   UserActionTypes.LoginFail,
+  props<{ errorMessage: string }>()
+);
+
+export const UserLogout = createAction(
+  UserActionTypes.Logout,
+);
+
+export const UserAutoLogin = createAction(
+  UserActionTypes.AutoLogin,
+);
+
+export const UserAutoLoginSuccess = createAction(
+  UserActionTypes.AutoLoginSuccess,
+  props<{ user: User }>()
+);
+
+export const UserAutoLoginFail = createAction(
+  UserActionTypes.AutoLoginFail,
   props<{ errorMessage: string }>()
 );
 

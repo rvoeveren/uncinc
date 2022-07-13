@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { Store } from '@ngrx/store';
 
-import { Observable, of } from 'rxjs';
+import { map, Observable } from 'rxjs';
+import { AuthState } from '../../store/reducers/auth.reducers';
+import { isAuthenticated } from '../../store/selectors/auth.selectors';
+import { AuthService } from '../services/auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -10,9 +14,13 @@ export class IsAuthenticatedGuard implements CanActivate {
 
   /**
    * Constructor
+   * @param {AuthService} authService
+   * @param {Store<AuthState>} store
    * @param {Router} router
    */
   public constructor(
+    private authService: AuthService,
+    private store: Store<AuthState>,
     private router: Router,
   ) {
   }
@@ -26,10 +34,11 @@ export class IsAuthenticatedGuard implements CanActivate {
    * @return boolean | UrlTree
    */
   public canActivate(next: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean | UrlTree> {
-    // TODO: Check the Store for the actual Auth status, now we're assuming you're not authenticated yet.
-    console.log('checking here if you are authenticated, token', localStorage.getItem('token'));
-    return localStorage.getItem('token') === null
-      ? of(this.router.parseUrl('/auth/login'))
-      : of(true);
+    return this.store.select(isAuthenticated).pipe(
+      map((authenticated: boolean) => {
+        return authenticated ? true : this.router.parseUrl('/auth/login');
+      })
+    );
+
   }
 }

@@ -9,8 +9,6 @@ import { LayoutModule } from './layout/layout.module';
 import { reducers } from './store/app.states';
 import { AuthEffects } from './store/effects/auth.effects';
 
-import { AuthReducer } from './store/reducers/auth.reducers';
-
 @NgModule({
   declarations: [
     AppComponent,
@@ -28,4 +26,5 @@ import { AuthReducer } from './store/reducers/auth.reducers';
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

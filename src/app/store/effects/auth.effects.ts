@@ -1,76 +1,50 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Actions, createEffect, ofType } from '@ngrx/effects';
-import { Action } from '@ngrx/store';
-import { catchError, map, mergeMap, of, tap } from 'rxjs';
+import { catchError, map, mergeMap, of, tap, } from 'rxjs';
 import { AuthService } from '../../auth/services/auth.service';
-import { UserLogin, UserLoginFail, UserLoginSuccess } from '../actions/user.actions';
+import { UserAutoLogin, UserAutoLoginFail, UserAutoLoginSuccess, UserLogin, UserLoginFail, UserLoginSuccess, UserLogout, } from '../actions/user.actions';
 
 @Injectable()
 export class AuthEffects {
-
   loginUser$ = createEffect(
-    () => {
-      return this.actions$.pipe(
-        ofType(UserLogin),
-        mergeMap((action) => {
-          return this.authService.doLogin(action.username, action.password).pipe(
-            map((user) => {
-              return UserLoginSuccess({user: user});
-            }),
-            catchError((error: Error) => {
-              return of(UserLoginFail({ errorMessage: error.message }));
-            }),
-          );
-        })
-      );
-    }
-      // this.actions$.pipe(
-      //   mergeMap((action) => {
-      //     return this.authService.doLogin('123', '123').pipe(
-      //       map(movies => ({ type: '[Movies API] Movies Loaded Success', payload: movies })),
-      //       catchError(() => EMPTY)
-      //     )
-      //   })
-      // )
+    () => this.actions$.pipe(
+      ofType(UserLogin),
+      mergeMap((action) => this.authService.doLogin(action.username, action.password).pipe(
+        map((user) => UserLoginSuccess({user})),
+        catchError((error: Error) => of(UserLoginFail({errorMessage: error.message}))),
+      )),
+    ),
   );
 
-  loggedInUser$ = createEffect(
+  loggedInUser$ = createEffect(() => this.actions$.pipe(
+    ofType(UserLoginSuccess),
+    tap(() => {
+      this.router.navigate(['/dashboard']);
+    }),
+  ), {
+    dispatch: false,
+  });
+
+  logout$ = createEffect(() => this.actions$.pipe(
+    ofType(UserLogout),
+    tap(() => {
+      this.authService.doLogout();
+      this.router.navigate(['/']);
+    }),
+  ), {
+    dispatch: false,
+  });
+
+  autoLogin$ = createEffect(
     () => this.actions$.pipe(
-      ofType(UserLoginSuccess),
-      tap((action) => {
-        // TODO: Move the token setting to some form of AuthService
-        localStorage.setItem('token', action.user.token);
-
-        this.router.navigate([`/dashboard`]).then(() => {
-          // Could do something here, but we probably won't within the scope of the assignment.
-          // Maybe we could add an Action to store the token etc.
-        });
-      })
-    ), {
-      dispatch: false,
-    });
-
-  loginFailure$ = createEffect(
-    () => this.actions$.pipe(
-      ofType(UserLoginFail),
-      tap((action) => {
-        console.error('login failed...', action.errorMessage);
-
-        // this.router.navigate([`/dashboard`]).then(() => {
-        //   // Could do something here, but we probably won't within the scope of the assignment.
-        //   // Maybe we could add an Action to store the token etc.
-        // });
-      })
-    ), {
-      dispatch: false,
-    });
-
-  // @Effect({ dispatch: false })
-  // LogInFailure: Observable<any> = this.actions.pipe(
-  //   ofType(AuthActionTypes.LOGIN_FAILURE)
-  // );
-
+      ofType(UserAutoLogin),
+      mergeMap(() => this.authService.checkActiveLogin().pipe(
+        map((user) => UserAutoLoginSuccess({user})),
+        catchError((error: Error) => of(UserAutoLoginFail({errorMessage: error.message}))),
+      )),
+    ),
+  );
 
   /**
    * Constructor
@@ -79,20 +53,5 @@ export class AuthEffects {
    * @param {Router} router
    */
   constructor(private authService: AuthService, private actions$: Actions, private router: Router) {
-  }  // private eventService: EventService
-
+  }
 }
-
-
-// // In AuthEffect Class
-// login$ = createEffect(() => {
-//   return this.actions$.pipe(
-//     ofType(AuthActions.loginPage, AuthActions.loginModal),
-//     concatMap((action) =>
-//       this.authService.login(action.username, action.password).pipe(
-//         map((user) => AuthActions.loginSuccess({ user: user })),
-//         catchError((error) => of(AuthActions.loginFailure({ error })))
-//       )
-//     )
-//   );
-// });

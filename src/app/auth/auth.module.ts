@@ -1,10 +1,7 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
-import { DashboardComponent } from '../dashboard/components/dashboard/dashboard.component';
-import { DASHBOARD_ROUTES } from '../dashboard/dashboard.module';
-import { HomeComponent } from '../home/components/home/home.component';
 import { PublicLayoutComponent } from '../layout/components/public-layout/public-layout.component';
 import { LoginComponent } from './components/login/login.component';
 
@@ -34,4 +31,5 @@ export const AUTH_ROUTES: Routes = [
     ReactiveFormsModule,
   ]
 })
-export class AuthModule { }
+export class AuthModule {
+}

@@ -1,5 +1,5 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { PublicLayoutComponent } from '../layout/components/public-layout/public-layout.component';
 
@@ -28,4 +28,5 @@ export const HOME_ROUTES: Routes = [
     CommonModule
   ]
 })
-export class HomeModule { }
+export class HomeModule {
+}

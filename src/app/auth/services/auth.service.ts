@@ -1,7 +1,7 @@
-import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, of, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, of, throwError, } from 'rxjs';
+
 import { User } from '../models/user.model';
 
 export const ACCESS_TOKEN_NAME: string = 'auth.access_token';
@@ -10,7 +10,6 @@ export const ACCESS_TOKEN_NAME: string = 'auth.access_token';
   providedIn: 'root',
 })
 export class AuthService {
-
   public isAuthenticatedSubject: BehaviorSubject<boolean>;
 
   /**
@@ -23,11 +22,18 @@ export class AuthService {
 
   /**
    * Return whether the player has a valid access token (i.e., is authenticated).
-   *
-   * @return string { The access token for the current authenticated player }.
+   * @return string|undefined
    */
-  public getAccessToken(): string {
-    return localStorage.getItem(ACCESS_TOKEN_NAME) || '';
+  public getAccessToken(): string | undefined {
+    return localStorage.getItem(ACCESS_TOKEN_NAME) || undefined;
+  }
+
+  /**
+   * Sets the current access token
+   * @return void
+   */
+  public setAccessToken(token: string): void {
+    localStorage.setItem(ACCESS_TOKEN_NAME, token);
   }
 
   /**
@@ -37,40 +43,47 @@ export class AuthService {
    * @param password
    */
   public doLogin(username: string, password: string): Observable<User> {
-
-    // Normally we would of course post to the backend/api but in this case we can check it hardcoded.
+    // Normally we would of course post to the backend but in this case we can check it hardcoded.
     const isLoginDataCorrect: boolean = (username === 'uncinc') && (password === 'letmein');
-    console.error('login?', isLoginDataCorrect, username, password);
     if (!isLoginDataCorrect) {
       return throwError(() => new Error('Username and/or password are incorrect. Try again.'));
     }
 
+    const accessToken: string = '%#@-some-jwt-lookalike-token-to-fake-being-logged-in-123';
+    this.setAccessToken(accessToken);
+
     return of({
-      token: '%#@-some-jwt-lookalike-token-to-fake-being-logged-in-123',
       email: 'uncincuser@uncinc.nl',
       hash: 'fake-user-hash-12345',
+      fullName: 'UNCINC Authenticated User',
+      token: accessToken,
     });
   }
 
   /**
-   * Logs the player out of the game by removing references to the access token.
+   * Checks whether the User is still logged in.
+   * @returns {Observable<User>}
    */
-  public doLogout(): Observable<boolean> {
-    return of(true);
-    // const token = localStorage.getItem(ACCESS_TOKEN_NAME);
-    // const httpOptions = {
-    //   withCredentials: true,
-    //   headers: new HttpHeaders({
-    //     Authorization: `Bearer ${token}`,
-    //     'Content-Type': 'application/json',
-    //     Accept: 'application/json',
-    //   }),
-    // };
-    //
-    // return this.http.delete(API_ENDPOINT + 'logout', httpOptions).pipe(
-    //   finalize(() => {
-    //     this.clearAccessTokenAndRestartApp();
-    //   }),
-    // );
+  public checkActiveLogin(): Observable<User> {
+    // Normally would do API check on expiration of token etc., but now we assume it's all cool.
+    const token: string | undefined = this.getAccessToken();
+    if (token) {
+      return of({
+        fullName: 'UNCINC Authenticated User',
+        token: this.getAccessToken(),
+        email: 'uncincuser@uncinc.nl',
+        hash: 'fake-user-hash-12345',
+      });
+    }
+
+    return throwError(() => new Error('Could not auto-login'));
+  }
+
+  /**
+   * Logs the player out of the game by removing references to the access token.
+   * @return void
+   */
+  public doLogout(): void {
+    localStorage.removeItem(ACCESS_TOKEN_NAME);
   }
 }

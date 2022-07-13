@@ -1,12 +1,5 @@
-import { createFeatureSelector } from '@ngrx/store';
-import { AuthReducer, AuthState } from './reducers/auth.reducers';
-
-export interface AppState {
-  authState: AuthState;
-}
+import { AuthReducer } from './reducers/auth.reducers';
 
 export const reducers = {
   auth: AuthReducer,
 };
-
-export const selectAuthState = createFeatureSelector<AppState>('auth');

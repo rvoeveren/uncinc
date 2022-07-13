@@ -3,9 +3,10 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
-import { UserActionTypes, UserLogin } from '../../../store/actions/user.actions';
-import { selectAuthState } from '../../../store/app.states';
+
+import { UserLogin } from '../../../store/actions/user.actions';
 import { AuthState } from '../../../store/reducers/auth.reducers';
+import { selectAuthState } from '../../../store/selectors/auth.selectors';
 
 @Component({
   selector: 'app-login',
@@ -30,15 +31,17 @@ export class LoginComponent implements OnInit {
     });
 
     this.getAuthState.subscribe((state) => {
-      this.errorMessage = state.errorMessage;
+      if (state.hasError) {
+        this.errorMessage = state.errorMessage;
+      }
     });
 
   }
 
   public login() {
     this.store.dispatch(UserLogin({
-        username: this.loginForm.get('username')?.value,
-        password: this.loginForm.get('password')?.value,
+      username: this.loginForm.get('username')?.value,
+      password: this.loginForm.get('password')?.value,
     }));
   }
 }
