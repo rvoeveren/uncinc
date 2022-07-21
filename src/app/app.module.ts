@@ -16,9 +16,6 @@ import { AuthEffects } from './store/effects/auth.effects';
   imports: [
     StoreModule.forRoot(reducers),
     EffectsModule.forRoot([AuthEffects]),
-    // StoreModule.forFeature('auth', {
-    //
-    // }),
     BrowserModule,
     AppRoutingModule,
     LayoutModule,

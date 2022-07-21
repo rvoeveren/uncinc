@@ -44,28 +44,3 @@ export const UserAutoLoginFail = createAction(
   UserActionTypes.AutoLoginFail,
   props<{ errorMessage: string }>()
 );
-
-// export class Login implements Action {
-//   readonly type = UserActionTypes.LOGIN;
-//
-//   constructor(public payload: User) {
-//   }
-// }
-//
-// export class LoginSucceeded implements Action {
-//   readonly type = UserActionTypes.LOGIN_SUCCEEDED;
-//
-//   constructor(public payload: User) {
-//   }
-// }
-//
-// export class LoginFailed implements Action {
-//   readonly type = UserActionTypes.LOGIN_FAILED;
-//
-//   constructor(public payload: User) {
-//   }
-// }
-//
-// export type All = | Login | LoginSucceeded;
-
-// export type UserActions = Login | LoginSucceeded | LoginFailed;
